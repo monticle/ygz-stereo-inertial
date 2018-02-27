@@ -23,7 +23,6 @@ install_manifest.txt
 /doc/latex
 index.html
 
-*build*
 bin/*
 lib/
 results/*
@@ -41,10 +40,14 @@ KeyFrameTrajectory.txt
 Examples/Stereo/stereo_kitti 
 Examples/Stereo/stereo_euroc 
 Examples/RGB-D/rgbd_tum 
+Thirdparty/Pangolin/
+Thirdparty/DBoW2/build/
+Thirdparty/g2o/build/
+Thirdparty/g2o/config.h
+Thirdparty/fast/build/
 *~
 **/KeyFrameTrajectory.txt
 **/tmp/
-*.bak
 callgrind*
 log
 

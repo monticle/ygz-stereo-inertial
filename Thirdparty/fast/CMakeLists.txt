@@ -1,15 +1,18 @@
 #######################################
 # user config
 
-# Based on the ARM_ARCHITECTURE environment variable
-# Set IS_ARM to build on the Odroid board
-IF(DEFINED ENV{ARM_ARCHITECTURE})
-  MESSAGE("ARM_ARCHITECTURE environment variable set to " $ENV{ARM_ARCHITECTURE})
-  SET(IS_ARM TRUE)
-ELSE()
+IF(WIN32)
   SET(IS_ARM FALSE)
+ELSE()
+  EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+  if( ${ARCHITECTURE} MATCHES "aarch64" )
+  	set( IS_ARM TRUE )
+  else()
+  	SET(IS_ARM FALSE)
+  endif()
 ENDIF()
 
+MESSAGE(STATUS "ARM_ARCHITECTURE environment variable set to " $ENV{IS_ARM})
 SET(BUILD_TEST TRUE)
 
 #######################################
@@ -23,7 +26,8 @@ SET(CMAKE_BUILD_TYPE Release) # Options:  Debug, RelWithDebInfo, Release
 SET(CMAKE_CXX_FLAGS "-Wall -Werror ")
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g")
 IF(IS_ARM)
-  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -mfpu=neon -march=armv7-a")
+  #SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -mfpu=neon -march=armv7-a") #this is for 32bit
+  ADD_DEFINITIONS(-DPNG_ARM_NEON_CHECK_SUPPORTED)
 ELSE()
   SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -mmmx -msse -msse -msse2 -msse3 -mssse3 -fomit-frame-pointer")
 ENDIF()

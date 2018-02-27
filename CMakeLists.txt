@@ -41,8 +41,19 @@ else()
 endif()
 
 # arm and intel cpu configurations
-IF(DEFINED ENV{ARM_ARCHITECTURE})
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpu=neon -march=armv7-a")
+IF(WIN32)
+  SET(IS_ARM FALSE)
+ELSE()
+  EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+  if( ${ARCHITECTURE} MATCHES "aarch64" )
+  	set( IS_ARM TRUE )
+  else()
+  	SET(IS_ARM FALSE)
+  endif()
+ENDIF()
+IF(IS_ARM)
+   #SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -mfpu=neon -march=armv7-a") #this is for 32bit
+  ADD_DEFINITIONS(-DPNG_ARM_NEON_CHECK_SUPPORTED)
 ELSE()
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse -msse2 -march=native")
 ENDIF()
@@ -117,3 +128,5 @@ set(YGZ_LIBS ygz-common ygz-cv ygz-util ygz-backend ygz-system)
 
 # build examples
 add_subdirectory( examples )
+
+add_subdirectory( leadsense )
