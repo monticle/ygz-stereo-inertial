@@ -59,8 +59,9 @@ cd Thirdparty/g2o
 mkdir build
 cd build
 if [ ! -f "$bsfile" ]; then
-	sudo apt-get install libblas-dev
-	sudo apt-get install liblapack-dev
+	sudo apt-get -y install libeigen3-dev
+	sudo apt-get -y install libblas-dev
+	sudo apt-get -y install liblapack-dev
 	cmake .. -DCMAKE_BUILD_TYPE=Release
 	make -j4
 
