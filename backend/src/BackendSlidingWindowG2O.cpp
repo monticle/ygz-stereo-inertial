@@ -11,7 +11,11 @@
 #include <g2o/core/block_solver.h>
 #include <g2o/core/optimization_algorithm_gauss_newton.h>
 #include <g2o/core/optimization_algorithm_levenberg.h>
+#ifdef WIN32
+#include <g2o/solvers/eigen/linear_solver_eigen.h>
+#else
 #include <g2o/solvers/linear_solver_eigen.h>
+#endif
 #include <g2o/core/robust_kernel_impl.h>
 
 namespace ygz {

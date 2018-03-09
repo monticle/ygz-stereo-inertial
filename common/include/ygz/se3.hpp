@@ -20,7 +20,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
-
 #ifndef SOPHUS_SE3_HPP
 #define SOPHUS_SE3_HPP
 
@@ -34,7 +33,7 @@ namespace Sophus {
     template<typename _Scalar, int _Options = 0>
     class SE3Group;
 
-    typedef SE3Group<double> SE3 EIGEN_DEPRECATED;
+	typedef SE3Group<double> SE3;	// EIGEN_DEPRECATED;
     typedef SE3Group<double> SE3d; /**< double precision SE3 */
     typedef SE3Group<float> SE3f;  /**< single precision SE3 */
     typedef Matrix<double, 6, 1> Vector6d;

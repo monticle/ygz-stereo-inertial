@@ -23,6 +23,7 @@ install_manifest.txt
 /doc/latex
 index.html
 
+build/*
 bin/*
 lib/
 results/*

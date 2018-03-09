@@ -125,7 +125,7 @@ namespace ygz {
                     if (!mbResetRequested)
                         break;
                 }
-                usleep(3000);
+				usleep(3000);
             }
             mbAbortBA = false;
         }

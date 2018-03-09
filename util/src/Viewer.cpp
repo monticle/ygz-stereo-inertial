@@ -206,7 +206,7 @@ namespace ygz {
             // Swap frames and Process Events
             pangolin::FinishFrame();
 
-            usleep(30000);
+			usleep(30000);            
         }
 
         mbRunning = false;

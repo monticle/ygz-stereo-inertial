@@ -22,7 +22,7 @@ namespace ygz {
         float mScore = 0;                        // score, maybe harris or other things
         float mAngle = 0;                        // angle of oriented FAST
         size_t mLevel = 0;                       // the pyramid level
-        uchar mDesc[32] = {0};                   // 256 bits of ORB feature (32x8), ignored if using LK flow
+        uchar mDesc[32]/* = {0}*/;                   // 256 bits of ORB feature (32x8), ignored if using LK flow
 
         // flags
         bool mbOutlier = false;                  // true if it is an outlier

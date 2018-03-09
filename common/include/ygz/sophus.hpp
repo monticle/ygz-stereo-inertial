@@ -34,6 +34,11 @@ using ::log1p;
 }
 #endif
 
+#ifdef WIN32
+#define _USE_MATH_DEFINES
+#include <math.h>
+#endif
+
 #include <Eigen/Eigen>
 #include <Eigen/Geometry>
 

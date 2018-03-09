@@ -24,21 +24,30 @@ endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
-# Check C++11 or C++0x support
+
+set(CMAKE_CXX_STANDARD 11) #C++ 11...
+set(CMAKE_CXX_STANDARD_REQUIRED ON) #...is required...
+set(CMAKE_CXX_EXTENSIONS OFF) #..without compiler extensions like gnu++11
+
+#add C++11 for CUDA
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-std=c++11)
+
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-if(COMPILER_SUPPORTS_CXX11)
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-   add_definitions(-DCOMPILEDWITHC11)
-   message(STATUS "Using flag -std=c++11.")
-elseif(COMPILER_SUPPORTS_CXX0X)
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-   add_definitions(-DCOMPILEDWITHC0X)
-   message(STATUS "Using flag -std=c++0x.")
-else()
-   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-endif()
+
+if(NOT MSVC)
+	if(COMPILER_SUPPORTS_CXX11)
+	   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	   set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -std=c++11")
+	   add_definitions(-DCOMPILEDWITHC11)
+	   message(STATUS "Using flag -std=c++11.")
+	else(COMPILER_SUPPORTS_CXX11)
+	   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+	endif(COMPILER_SUPPORTS_CXX11)
+else(NOT MSVC)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+endif(NOT MSVC)
 
 # arm and intel cpu configurations
 IF(WIN32)
@@ -72,19 +81,39 @@ endif()
 
 find_package(Eigen3 3.1.0 REQUIRED)
 find_package(Pangolin REQUIRED)
-find_package( Glog REQUIRED )
 
 # to show 'include' in QtCreator
-FILE(GLOB_RECURSE INC_ALL "*/*.h")
-add_custom_target(headers SOURCES ${INC_ALL})
+#FILE(GLOB_RECURSE INC_ALL "*/*.h")
+#add_custom_target(headers SOURCES ${INC_ALL})
+
+if(WIN32)
+	find_package(DBoW2 REQUIRED)
+	find_package(g2o REQUIRED)
+	find_package(fast REQUIRED)
+	#find_package(Sophus REQUIRED)
+	
+	find_package( glog REQUIRED )
+	set(GLOG_LIBRARY glog::glog) #https://github.com/google/glog/issues/155
+else()
+
+	find_package( Glog3 REQUIRED )
+	set(G2O_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/)
+	set(G2O_LIBRARIES ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so)
+	set(DBOW2_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/)
+	set(DBOW2_LIBRARIES ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so)
+	set(FAST_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/Thirdparty/fast/include)
+	set(FAST_LIBRARIES ${PROJECT_SOURCE_DIR}/Thirdparty/fast/build/libfast.so)
+endif()
 
 include_directories(
 ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/include
 ${PROJECT_SOURCE_DIR}/src
-${PROJECT_SOURCE_DIR}/Thirdparty/fast/include
-${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2
-${PROJECT_SOURCE_DIR}/Thirdparty/g2o/
+${OpenCV_INCLUDE_DIRS}
+${G2O_INCLUDE_DIR}
+${DBOW2_INCLUDE_DIR}
+${SOPHUS_INCLUDE_DIR}
+${FAST_INCLUDE_DIR}
 ${EIGEN3_INCLUDE_DIR}
 ${Pangolin_INCLUDE_DIRS}
 ${GLOG_INCLUDE_DIRS}
@@ -96,14 +125,15 @@ set(THIRD_PARTY_LIBS
         ${OpenCV_LIBS}
         ${EIGEN3_LIBS}
         ${Pangolin_LIBRARIES}
-        ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
-        ${PROJECT_SOURCE_DIR}/Thirdparty/fast/build/libfast.so
-        ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
+        ${G2O_LIBRARIES}
+        ${DBOW2_LIBRARIES}
+        ${FAST_LIBRARIES}
         ${BLAS_LIBRARIES}
         ${LAPACK_LIBRARIES}
         ${GLOG_LIBRARY}
 )
-
+message("GLOG_INCLUDE_DIRS: ${GLOG_INCLUDE_DIRS}")
+message("GLOG_LIBRARY: ${GLOG_LIBRARY}")
 # subdirectories
 include_directories(
         util/include

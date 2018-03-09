@@ -768,7 +768,16 @@ namespace ygz {
         // Compute distances between them
         const size_t N = vDescriptors.size();
 
-        float Distances[N][N];
+#ifdef WIN32
+		float **Distances;
+		Distances = new float*[N];
+		for (int i = 0; i < N; i++)
+		{
+			Distances[i] = new float[N];
+		}
+#else
+		float Distances[N][N];
+#endif
         for (size_t i = 0; i < N; i++) {
             Distances[i][i] = 0;
             for (size_t j = i + 1; j < N; j++) {
@@ -792,6 +801,11 @@ namespace ygz {
             }
         }
 
+#ifdef WIN32
+		for (int i = 0; i < N; i++)
+			delete[]Distances[i];
+		delete[]Distances;
+#endif 
         {
             memcpy(mp->mDescriptor, vDescriptors[BestIdx], 32);
         }

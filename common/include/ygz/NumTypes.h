@@ -54,7 +54,7 @@ namespace ygz {
     typedef Eigen::Matrix<double, 2, 6> Matrix26d;
     typedef Eigen::Matrix<float, 2, 6> Matrix26f;
 
-    typedef unsigned char uchar;
+    //typedef unsigned char uchar;
 
     // vector of Eigen things
     typedef std::vector<Vector3d, Eigen::aligned_allocator<Vector3d>> VecVector3d;

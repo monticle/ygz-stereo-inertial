@@ -6,10 +6,23 @@
 #include <stdexcept>
 #include <glog/logging.h>
 
-#include "Thirdparty/DBoW2/DBoW2/FORB.h"
-#include "Thirdparty/DBoW2/DBoW2/BowVector.h"
-#include "Thirdparty/DBoW2/DBoW2/FeatureVector.h"
-#include "Thirdparty/DBoW2/DBoW2/TemplatedVocabulary.h"
+#if defined(_MSC_VER)
+#define NOMINMAX
+#include <windows.h>
+#define sleep(x) Sleep((x) * 1000)
+#define usleep(x) Sleep((x) / 1000)
+
+#define ALIGNED_(x) __declspec(align(x))
+#else
+#if defined(__GNUC__)
+#define ALIGNED_(x) __attribute__ ((aligned(x)))
+#endif
+#endif
+
+#include "DBoW2/FORB.h"
+#include "DBoW2/BowVector.h"
+#include "DBoW2/FeatureVector.h"
+#include "DBoW2/TemplatedVocabulary.h"
 
 #include "se3.hpp"
 

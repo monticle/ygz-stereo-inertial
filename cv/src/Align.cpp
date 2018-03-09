@@ -14,8 +14,8 @@ namespace ygz {
         bool converged = false;
 
         // compute derivative of template and prepare inverse compositional
-        float __attribute__ (( __aligned__ ( 16 ))) ref_patch_dx[align_patch_area];
-        float __attribute__ (( __aligned__ ( 16 ))) ref_patch_dy[align_patch_area];
+		float ALIGNED_(16) ref_patch_dx[align_patch_area];
+		float ALIGNED_(16) ref_patch_dy[align_patch_area];
         Matrix3f H;
         H.setZero();
 
@@ -121,7 +121,7 @@ namespace ygz {
         bool converged = false;
 
         // compute derivative of template and prepare inverse compositional
-        float __attribute__ (( __aligned__ ( 16 ))) ref_patch_dv[align_patch_area];
+		float ALIGNED_(16) ref_patch_dv[align_patch_area];
         Matrix2f H;
         H.setZero();
 

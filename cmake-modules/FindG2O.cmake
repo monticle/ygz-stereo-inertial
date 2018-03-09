@@ -1,5 +1,8 @@
 # Find the header files
 
+#set(G2O_ROOT "${PROJECT_SOURCE_DIR}/3rdparty/g2o/")
+set(G2O_ROOT "C:/slam_utils/g2o/")
+
 FIND_PATH(G2O_INCLUDE_DIR g2o/core/base_vertex.h
   ${G2O_ROOT}/include
   $ENV{G2O_ROOT}/include
@@ -72,6 +75,9 @@ MACRO(FIND_G2O_LIBRARY MYLIBRARY MYLIBRARYNAME)
     ENDIF(MYLIBRARY)
   ENDIF( NOT ${MYLIBRARY}_DEBUG)
   
+  IF(${MYLIBRARY})
+	set(G2O_LIBRARIES ${G2O_LIBRARIES} ${${MYLIBRARY}})
+  ENDIF(${MYLIBRARY})
 ENDMACRO(FIND_G2O_LIBRARY LIBRARY LIBRARYNAME)
 
 # Find the core elements

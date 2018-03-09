@@ -15,6 +15,9 @@
 # Copyright (c) 2009 Benoit Jacob <jacob.benoit.1@gmail.com>
 # Redistribution and use is allowed according to the terms of the 2-clause BSD license.
 
+#set(EIGEN_ROOT "${PROJECT_SOURCE_DIR}/3rdparty/eigen-3.3.3/")
+set(EIGEN_ROOT "C:/slam_utils/eigen-3.3.3/")
+
 if(NOT Eigen3_FIND_VERSION)
   if(NOT Eigen3_FIND_VERSION_MAJOR)
     set(Eigen3_FIND_VERSION_MAJOR 2)
@@ -61,19 +64,16 @@ if (EIGEN3_INCLUDE_DIR)
 
 else (EIGEN3_INCLUDE_DIR)
 
-  # specific additional paths for some OS
-  if (WIN32)
-    set(EIGEN_ADDITIONAL_SEARCH_PATHS ${EIGEN_ADDITIONAL_SEARCH_PATHS} "C:/Program Files/Eigen/include" "C:/Program Files (x86)/Eigen/include")
-  endif(WIN32)
-
   find_path(EIGEN3_INCLUDE_DIR NAMES signature_of_eigen3_matrix_library
       PATHS
+	  ${EIGEN_ROOT}
       ${CMAKE_INSTALL_PREFIX}/include
-      ${EIGEN_ADDITIONAL_SEARCH_PATHS}
       ${KDE4_INCLUDE_DIR}
-      PATH_SUFFIXES eigen3 eigen
+      ${PROJECT_PATH}
+      ${EXTERNAL_PATH}
+      PATH_SUFFIXES eigen3 eigen Eigen/src/eigen
     )
-
+	
   if(EIGEN3_INCLUDE_DIR)
     _eigen3_check_version()
   endif(EIGEN3_INCLUDE_DIR)
