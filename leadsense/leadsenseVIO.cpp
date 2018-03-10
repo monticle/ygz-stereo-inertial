@@ -50,9 +50,7 @@ bool genYaml(StereoParameters param, Resolution_FPS resfps){
 
 int main(int argc, char **argv) {
 	cout << endl << "add parameter to change resolution : ./leadsense [800|400(default)]" << endl;
-    FLAGS_logtostderr = true;
     google::InitGoogleLogging(argv[0]);
-
 	std::cout << "init evo stereo camera... " << std::endl;
 	StereoCamera camera;
 	bool running = false;
