@@ -9,3 +9,6 @@ add_library(ygz-common
 target_link_libraries(ygz-common
         ${THIRD_PARTY_LIBS}
         )
+		
+		
+cotire(ygz-common)

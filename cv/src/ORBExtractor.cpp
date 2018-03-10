@@ -1,14 +1,12 @@
+#include "ygz/Frame.h"
+#include "ygz/Feature.h"
+#include "ygz/ORBExtractor.h"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <fast/fast.h>
 
-#include "ygz/Frame.h"
-#include "ygz/Feature.h"
-#include "ygz/ORBExtractor.h"
-
 using namespace cv;
-using namespace std;
 
 namespace ygz {
 

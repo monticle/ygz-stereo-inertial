@@ -1,3 +1,4 @@
+#include "ygz/Settings.h"
 #include "ygz/Feature.h"
 #include "ygz/ORBMatcher.h"
 #include "ygz/Frame.h"

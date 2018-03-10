@@ -5,3 +5,5 @@ add_library(ygz-system
 target_link_libraries( ygz-system
     ygz-common ygz-cv ygz-util ygz-backend
 )
+
+cotire(ygz-system)

@@ -1,11 +1,6 @@
 #ifndef YGZ_SETTINGS_H_
 #define YGZ_SETTINGS_H_
 
-#include <Eigen/Eigen>
-#include <Eigen/Geometry>
-#include <stdexcept>
-#include <glog/logging.h>
-
 #if defined(_MSC_VER)
 #define NOMINMAX
 #include <windows.h>
@@ -18,6 +13,11 @@
 #define ALIGNED_(x) __attribute__ ((aligned(x)))
 #endif
 #endif
+
+#include <Eigen/Eigen>
+#include <Eigen/Geometry>
+#include <stdexcept>
+#include <glog/logging.h>
 
 #include "DBoW2/FORB.h"
 #include "DBoW2/BowVector.h"

@@ -8,3 +8,5 @@ add_library(ygz-cv
         )
 
 target_link_libraries(ygz-cv ygz-common ${THIRD_PARTY_LIBS})
+
+cotire(ygz-cv)

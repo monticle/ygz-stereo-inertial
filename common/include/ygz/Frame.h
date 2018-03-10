@@ -1,17 +1,16 @@
 #ifndef YGZ_FRAME_H
 #define YGZ_FRAME_H
 
-#include <opencv2/core/core.hpp>
-#include <vector>
-
 #include "ygz/NumTypes.h"
 #include "ygz/Settings.h"
 #include "ygz/Camera.h"
 #include "ygz/IMUData.h"
 #include "ygz/IMUPreIntegration.h"
 
+#include <opencv2/core/core.hpp>
+#include <vector>
+
 using cv::Mat;
-using namespace std;
 
 namespace ygz {
 

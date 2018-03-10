@@ -15,7 +15,7 @@ endif()
 
 if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Release")
   message(WARNING "CMAKE_BUILD_TYPE not set to 'Release'. Performance may be terrible.")
-else()
+elseif(NOT WIN32)
   message(STATUS "Building with build type '${CMAKE_BUILD_TYPE}', turn on the compiler optimization")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}     -Wall -march=native -O3 -Wno-reorder -pthread -fopenmp")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -march=native -O3 -pthread -fopenmp")
@@ -24,13 +24,9 @@ endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
-
 set(CMAKE_CXX_STANDARD 11) #C++ 11...
 set(CMAKE_CXX_STANDARD_REQUIRED ON) #...is required...
 set(CMAKE_CXX_EXTENSIONS OFF) #..without compiler extensions like gnu++11
-
-#add C++11 for CUDA
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-std=c++11)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -39,7 +35,6 @@ CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
 if(NOT MSVC)
 	if(COMPILER_SUPPORTS_CXX11)
 	   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-	   set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -std=c++11")
 	   add_definitions(-DCOMPILEDWITHC11)
 	   message(STATUS "Using flag -std=c++11.")
 	else(COMPILER_SUPPORTS_CXX11)
@@ -52,6 +47,7 @@ endif(NOT MSVC)
 # arm and intel cpu configurations
 IF(WIN32)
   SET(IS_ARM FALSE)
+  add_definitions(-DNOMINMAX)
 ELSE()
   EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
   if( ${ARCHITECTURE} MATCHES "aarch64" )
@@ -63,11 +59,14 @@ ENDIF()
 IF(IS_ARM)
    #SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -mfpu=neon -march=armv7-a") #this is for 32bit
   ADD_DEFINITIONS(-DPNG_ARM_NEON_CHECK_SUPPORTED)
-ELSE()
+ELSEIF(NOT WIN32)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse -msse2 -march=native")
 ENDIF()
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake-modules)
+include(cotire)
+set(COTIRE_MINIMUM_NUMBER_OF_TARGET_SOURCES 1)
+set (COTIRE_PCH_MEMORY_SCALING_FACTOR "400")
 
 # thirdparty libs 
 find_package(OpenCV 3.0 QUIET)
@@ -155,7 +154,6 @@ add_subdirectory(backend)
 add_subdirectory(system)
 
 set(YGZ_LIBS ygz-common ygz-cv ygz-util ygz-backend ygz-system)
-
 # build examples
 add_subdirectory( examples )
 

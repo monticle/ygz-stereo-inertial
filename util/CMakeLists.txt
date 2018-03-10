@@ -6,3 +6,5 @@ add_library( ygz-util
 target_link_libraries( ygz-util
         ${THIRD_PARTY_LIBS}
 )
+
+cotire(ygz-util)
