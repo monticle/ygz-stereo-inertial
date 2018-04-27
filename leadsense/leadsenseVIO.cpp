@@ -26,7 +26,7 @@ bool genYaml(StereoParameters param, Resolution_FPS resfps){
 		return false;
 	}
 	fs << "%YAML:1.0" << endl << "---" << endl << endl;
-	fs << "PureVisionMode: true" << endl;
+	fs << "PureVisionMode: false" << endl;
 	fs << "UseViewer: true" << endl << endl;
 	fs << "Camera.fx: " << param.leftCam.focal.x << endl;
 	fs << "Camera.fy: " << param.leftCam.focal.y << endl;
@@ -41,7 +41,7 @@ bool genYaml(StereoParameters param, Resolution_FPS resfps){
 	// Camera frames per second 
 	fs << "Camera.fps: " << resfps.fps << endl;
 	// stereo baseline[m] times fx
-	fs << "Camera.bf: " << param.T.x / 1000 * param.leftCam.focal.x << endl;
+	fs << "Camera.bf: " << param.baseline() / 1000 * param.leftCam.focal.x  << endl;
 
 	fs.close();
 	return true;
@@ -52,25 +52,28 @@ bool running;
 // imu
 std::mutex imu_lock;
 VecIMU vimu;
-evo::imu::IMUData imu_rawdata;
+std::vector<evo::imu::IMUData> imu_rawdata;
 void retrieveIMUData()
 {
 	while (running){
 		imu_lock.lock();
 
-		float lastgx = imu_rawdata.gyro[0];
+		float lastgx = -10000;
 		imu_rawdata = camera.retrieveIMUData();
-		if (lastgx != imu_rawdata.gyro[0])
-		{
-			ygz::IMUData imudata = ygz::IMUData(imu_rawdata.gyro[0], imu_rawdata.gyro[1], imu_rawdata.gyro[2],
-				imu_rawdata.accel[0], imu_rawdata.accel[1], imu_rawdata.accel[2], imu_rawdata.timestamp);
-			vimu.push_back(imudata);
-		}
 
+		for (int i = 0; i < imu_rawdata.size(); i++)
+		{
+			if (lastgx != imu_rawdata.at(i).gyro[0])
+			{
+				ygz::IMUData imudata = ygz::IMUData(imu_rawdata.at(i).gyro[0], imu_rawdata.at(i).gyro[1], imu_rawdata.at(i).gyro[2],
+					imu_rawdata.at(i).accel[0], imu_rawdata.at(i).accel[1], imu_rawdata.at(i).accel[2], imu_rawdata.at(i).timestamp);
+				vimu.push_back(imudata);
+				lastgx = imu_rawdata.at(i).gyro[0];
+			}
+		}
 		imu_lock.unlock();
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
-
 }
 
 int main(int argc, char **argv) {
@@ -108,6 +111,9 @@ int main(int argc, char **argv) {
 		std::cout << "Open IMU failed." << std::endl;
 		return 3;
 	}
+	//camera.setIMUDataType(evo::imu::IMU_DATA_TYPE::IMU_DATA_TYPE_RAW);
+	camera.setIMUDataType(evo::imu::IMU_DATA_TYPE::IMU_DATA_TYPE_RAW_CALIBRATED);
+
 
 	if (genYaml(camera.getStereoParameters(), camera.getImageSizeFPS()) == false){
 		return 4;
@@ -118,12 +124,18 @@ int main(int argc, char **argv) {
 	// set TBC
 	Matrix3d Rbc_;
 	Vector3d tbc_;
+	//Rbc_ <<
+	//	1, 0, 0,
+	//	0, -1, 0,
+	//	0, 0, -1;
+	//tbc_ <<
+	//	-0.0475, 0.0032, -0.004;
 	Rbc_ <<
-		1, 0, 0,
+		-1, 0, 0,
 		0, -1, 0,
-		0, 0, -1;
+		0, 0, 1;
 	tbc_ <<
-		-0.0475, 0.0032, -0.004;
+		0.09195, 0.00, -0.0129;
 
 	setting::TBC = SE3d(Rbc_, tbc_);
 
@@ -137,8 +149,8 @@ int main(int argc, char **argv) {
 
 		running = true;
 		VecIMU vimu2;
-		std::thread imu_thread(retrieveIMUData);
-		imu_thread.detach();
+		//std::thread imu_thread(retrieveIMUData);
+		//imu_thread.detach();
 
 		std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 		//main loop
@@ -147,10 +159,21 @@ int main(int argc, char **argv) {
 			// Get frames and launch the computation
 			if (camera.grab(true) == RESULT_CODE_OK)
 			{
-				imu_lock.lock();
-				std::copy(vimu.begin(), vimu.end(), std::back_inserter(vimu2));
-				vimu.clear();
-				imu_lock.unlock();
+				float lastgx = -10000;
+				imu_rawdata = camera.retrieveIMUData();
+
+				for (int i = 0; i < imu_rawdata.size(); i++)
+				{
+					//if (lastgx != imu_rawdata.at(i).gyro[0])
+					{
+						ygz::IMUData imudata = ygz::IMUData(imu_rawdata.at(i).gyro[0] , imu_rawdata.at(i).gyro[1], imu_rawdata.at(i).gyro[2],
+							imu_rawdata.at(i).accel[0], imu_rawdata.at(i).accel[1], imu_rawdata.at(i).accel[2], imu_rawdata.at(i).timestamp);
+						vimu.push_back(imudata);
+						//lastgx = imu_rawdata.at(i).gyro[0];
+					}
+					//std::cout <<"imu data size " << imu_rawdata.size() << std::endl;
+				}
+
 				evo_image = camera.retrieveImage(SIDE_SBS);
 
 				//Mat convert
@@ -159,10 +182,11 @@ int main(int argc, char **argv) {
 				// Read left and right images from file
 				imLeft = cv_image(cv::Rect(0, 0, width, height));
 				imRight = cv_image(cv::Rect(width, 0, width, height));
-				double tframe = camera.getTargetFrameTimeCode();
+				double tframe = camera.getCurrentFrameTimeCode();
+				cv::imshow("right", imRight);
 
 				// Pass the images and imu data to the SLAM system
-				system.AddStereoIMU(imLeft, imRight, tframe, vimu2);
+				system.AddStereoIMU(imLeft, imRight, tframe, vimu);
 				double ttrack = std::chrono::duration_cast<std::chrono::duration<double> >(std::chrono::steady_clock::now() - t1).count();
 				t1 = std::chrono::steady_clock::now();
 
@@ -173,11 +197,13 @@ int main(int argc, char **argv) {
 					cnt = 0;
 					tempt = 0;
 				}
-				vimu2.clear();
-
+				vimu.clear();
 			}
+
 			running = (cv::waitKey(5) != 27);
 		}
+		camera.stopRetrieveIMU();
+		camera.close();
 	}
 	cout << "finished." << endl;
 	return 0;

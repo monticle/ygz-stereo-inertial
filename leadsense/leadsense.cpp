@@ -41,7 +41,7 @@ bool genYaml(StereoParameters param, Resolution_FPS resfps){
 	// Camera frames per second 
 	fs << "Camera.fps: " << resfps.fps << endl;
 	// stereo baseline[m] times fx
-	fs << "Camera.bf: " << param.T.x / 1000 * param.leftCam.focal.x << endl;
+	fs << "Camera.bf: " << param.baseline() / 1000 * param.leftCam.focal.x << endl;
 	
 	fs.close();
 	return true;
@@ -97,20 +97,21 @@ int main(int argc, char **argv)
 		//running flag
 		running = true;
 		//main loop
+		double preTime = 0;
 		while (running)
 		{
 			// Get frames and launch the computation
 			if (camera.grab(true) == RESULT_CODE_OK)
 			{
 				evo_image = camera.retrieveImage(SIDE_SBS);
-				//Mat convert
+				//Mat convert 
 				cv_image = evoMat2cvMat(evo_image);
 				
 				// Read left and right images from file
 				imLeft = cv_image(cv::Rect(0,0,width, height));
 				imRight = cv_image(cv::Rect(width,0,width, height));
-				double tframe = camera.getTargetFrameTimeCode();
-
+				double tframe = camera.getCurrentFrameTimeCode();
+				cv::imshow("right", imRight);
 				// Pass the images to the SLAM system
 				system.AddStereo(imLeft,imRight,tframe); 
 
@@ -123,10 +124,19 @@ int main(int argc, char **argv)
 					cout << "avg loop time:" << tempt / limit << endl;
 					cnt = 0; 
 					tempt = 0;
+					cout << "frame time: " << (tframe - preTime) / limit << endl;
+					preTime = tframe;
 				}
-				//std::this_thread::sleep_for(std::chrono::microseconds(5));
 			}      
+			std::this_thread::sleep_for(std::chrono::microseconds(5));
+
+			int key = cvWaitKey(10);
+			if (key == 27)
+			{
+				running = false;
+			}
 		}
+		camera.close();
 	}
     
     return 0;
