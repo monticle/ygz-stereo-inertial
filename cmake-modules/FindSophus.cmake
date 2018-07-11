@@ -1,6 +1,6 @@
 
 #set(Sophus_ROOT "${PROJECT_SOURCE_DIR}/3rdparty/Sophus/")
-set(Sophus_ROOT "C:/slam_utils/sources/Sophus-Windows")
+#set(Sophus_ROOT "C:/slam_utils/sources/Sophus-Windows")
 
 if (SOPHUS_INCLUDE_DIR)
   set(SOPHUS_FIND_QUIETLY TRUE)

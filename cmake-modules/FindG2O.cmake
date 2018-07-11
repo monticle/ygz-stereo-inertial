@@ -1,7 +1,7 @@
 # Find the header files
 
 #set(G2O_ROOT "${PROJECT_SOURCE_DIR}/3rdparty/g2o/")
-set(G2O_ROOT "C:/slam_utils/g2o/")
+#set(G2O_ROOT "C:/slam_utils/g2o/")
 
 FIND_PATH(G2O_INCLUDE_DIR g2o/core/base_vertex.h
   ${G2O_ROOT}/include

@@ -79,6 +79,7 @@ if(NOT OpenCV_FOUND)
 endif()
 
 find_package(Eigen3 3.1.0 REQUIRED)
+find_package(glew REQUIRED)
 find_package(Pangolin REQUIRED)
 
 # to show 'include' in QtCreator
@@ -113,6 +114,7 @@ ${G2O_INCLUDE_DIR}
 ${DBOW2_INCLUDE_DIR}
 ${SOPHUS_INCLUDE_DIR}
 ${FAST_INCLUDE_DIR}
+${GLEW_INCLUDE_DIR}
 ${EIGEN3_INCLUDE_DIR}
 ${Pangolin_INCLUDE_DIRS}
 ${GLOG_INCLUDE_DIRS}
@@ -128,6 +130,7 @@ set(THIRD_PARTY_LIBS
         ${G2O_LIBRARIES}
         ${DBOW2_LIBRARIES}
         ${FAST_LIBRARIES}
+		${GLEW_LIBRARIES}
         ${BLAS_LIBRARIES}
         ${LAPACK_LIBRARIES}
         ${GLOG_LIBRARY}

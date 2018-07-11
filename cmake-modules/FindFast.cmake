@@ -1,6 +1,6 @@
 
 #set(FAST_ROOT "${PROJECT_SOURCE_DIR}/3rdparty/fast/")
-set(FAST_ROOT "C:/slam_utils/fast")
+#set(FAST_ROOT "C:/slam_utils/fast")
 
 if (FAST_INCLUDE_DIR AND FAST_LIBRARIES)
   set(FAST_FIND_QUIETLY TRUE)

@@ -16,7 +16,7 @@
 # Redistribution and use is allowed according to the terms of the 2-clause BSD license.
 
 #set(EIGEN_ROOT "${PROJECT_SOURCE_DIR}/3rdparty/eigen-3.3.3/")
-set(EIGEN_ROOT "C:/slam_utils/eigen-3.3.3/")
+#set(EIGEN_ROOT "C:/slam_utils/eigen-3.3.3/")
 
 if(NOT Eigen3_FIND_VERSION)
   if(NOT Eigen3_FIND_VERSION_MAJOR)

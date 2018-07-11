@@ -1,6 +1,6 @@
 
 #set(DBoW2_ROOT "${PROJECT_SOURCE_DIR}/3rdparty/DBoW2/")
-set(DBoW2_ROOT "C:/slam_utils/DBoW2")
+#set(DBoW2_ROOT "C:/slam_utils/DBoW2")
 
 if (DBOW2_INCLUDE_DIR AND DBOW2_LIBRARIES)
   set(DBOW2_FIND_QUIETLY TRUE)
