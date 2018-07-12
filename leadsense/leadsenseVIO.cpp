@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
 	RESOLUTION_FPS_MODE res_mode = RESOLUTION_FPS_MODE_SD400_30;
 	if (argc > 1)
 	{
-		int res_n = atoi(argv[2]);
+		int res_n = atoi(argv[1]);
 		if (res_n == 800){
 			res_mode = RESOLUTION_FPS_MODE_HD800_30;
 		}
@@ -183,7 +183,7 @@ int main(int argc, char **argv) {
 				imLeft = cv_image(cv::Rect(0, 0, width, height));
 				imRight = cv_image(cv::Rect(width, 0, width, height));
 				double tframe = camera.getCurrentFrameTimeCode();
-				cv::imshow("right", imRight);
+				//cv::imshow("right", imRight);
 
 				// Pass the images and imu data to the SLAM system
 				system.AddStereoIMU(imLeft, imRight, tframe, vimu);

@@ -49,7 +49,7 @@ bool genYaml(StereoParameters param, Resolution_FPS resfps){
 
 int main(int argc, char **argv)
 {
-    cout << endl << "add parameter to change resolution : ./leadsense [800|400(default)]" << endl;
+    cout << endl << "add parameter to change resolution : ./leadsense [800|400(default)] [evo filename]" << endl;
     google::InitGoogleLogging(argv[0]);
 
 	std::cout << "init evo stereo camera... " << std::endl;
@@ -65,12 +65,18 @@ int main(int argc, char **argv)
 	RESOLUTION_FPS_MODE res_mode = RESOLUTION_FPS_MODE_SD400_30;
 	if(argc > 1)
 	{
-		int res_n = atoi(argv[2]);
+		int res_n = atoi(argv[1]);
 		if(res_n == 800){
 			res_mode = RESOLUTION_FPS_MODE_HD800_30;
 		}
 	}
-	RESULT_CODE res = camera.open(res_mode);
+	RESULT_CODE res;
+	if (argc > 2) {
+		res = camera.open(argv[2]);
+	}
+	else {
+		res = camera.open(res_mode);
+	}
 	std::cout << "stereo camera open: " << result_code2str(res) << std::endl;
 	//show image size
 	width = camera.getImageSizeFPS().width;
@@ -111,7 +117,8 @@ int main(int argc, char **argv)
 				imLeft = cv_image(cv::Rect(0,0,width, height));
 				imRight = cv_image(cv::Rect(width,0,width, height));
 				double tframe = camera.getCurrentFrameTimeCode();
-				cv::imshow("right", imRight);
+				//cv::imshow("left", imLeft);
+				//cv::imshow("right", imRight);
 				// Pass the images to the SLAM system
 				system.AddStereo(imLeft,imRight,tframe); 
 
@@ -127,7 +134,10 @@ int main(int argc, char **argv)
 					cout << "frame time: " << (tframe - preTime) / limit << endl;
 					preTime = tframe;
 				}
-			}      
+			}
+			else{
+				cout << "grab image failed: " << evo::result_code2str(res) << endl;
+			}
 			std::this_thread::sleep_for(std::chrono::microseconds(5));
 
 			int key = cvWaitKey(10);

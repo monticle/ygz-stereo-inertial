@@ -521,6 +521,7 @@ namespace ygz {
                 }
             }
         } else {
+
             for (size_t level = 0; level < setting::numPyramid; level++) {
                 vector<shared_ptr<Feature>> &features = allKeypoints[level];
                 if (features.empty())
@@ -895,9 +896,7 @@ namespace ygz {
         allKeypoints.resize(setting::numPyramid);
 
         const float W = 30;
-
         for (int level = 0; level < setting::numPyramid; ++level) {
-
             const int minBorderX = setting::EDGE_THRESHOLD - 3;
             const int minBorderY = minBorderX;
             const int maxBorderX = pyramid[level].cols - setting::EDGE_THRESHOLD + 3;
@@ -923,7 +922,7 @@ namespace ygz {
                 if (maxY > maxBorderY)
                     maxY = maxBorderY;
 
-                for (int j = 0; j < nCols; j++) {
+				for (int j = 0; j < nCols; j++) {
                     const float iniX = minBorderX + j * wCell;
                     float maxX = iniX + wCell + 6;
                     if (iniX >= maxBorderX - 6)
@@ -954,18 +953,20 @@ namespace ygz {
                 }
             }
 
-            auto &keypoints = allKeypoints[level];
-            keypoints.reserve(setting::extractFeatures);
+			if (vToDistributeKeys.size() > 0){
+				auto &keypoints = allKeypoints[level];
+				keypoints.reserve(setting::extractFeatures);
 
-            keypoints = DistributeOctTree(vToDistributeKeys, minBorderX, maxBorderX,
-                                          minBorderY, maxBorderY, mnFeaturesPerLevel[level], level);
-            // Add border to coordinates and scale information
-            for (auto feature: keypoints) {
-                feature->mPixel[0] += minBorderX;
-                feature->mPixel[1] += minBorderY;
-            }
-        }
+				keypoints = DistributeOctTree(vToDistributeKeys, minBorderX, maxBorderX,
+											  minBorderY, maxBorderY, mnFeaturesPerLevel[level], level);
 
+				// Add border to coordinates and scale information
+				for (auto feature: keypoints) {
+					feature->mPixel[0] += minBorderX;
+					feature->mPixel[1] += minBorderY;
+				}			
+			}
+        } 
         // compute orientations
         for (int level = 0; level < setting::numPyramid; ++level)
             computeOrientation(pyramid[level], allKeypoints[level], umax);

@@ -42,7 +42,7 @@ namespace ygz {
 
         mpCam = make_shared<CameraParam>(fx, fy, cx, cy, bf);
         mpExtractor = make_shared<ORBExtractor>(ORBExtractor::ORB_SLAM2);
-
+		mpMatcher = make_shared<ORBMatcher>();
         mState = NO_IMAGES_YET;
     }
 
@@ -63,12 +63,10 @@ namespace ygz {
         mvIMUSinceLastKF.insert(mvIMUSinceLastKF.end(), vimu.begin(), vimu.end());   // 追加imu数据
 
         // Extract and compute stereo matching in current frame
-        ORBExtractor extractor(ORBExtractor::ORB_SLAM2/*OPENCV_GFTT*/);
-        extractor.Detect(mpCurrentFrame, true);
-        extractor.Detect(mpCurrentFrame, false);
+		mpExtractor->Detect(mpCurrentFrame, true);
+		mpExtractor->Detect(mpCurrentFrame, false);
 
-        ORBMatcher matcher;
-        matcher.ComputeStereoMatches(mpCurrentFrame);
+		mpMatcher->ComputeStereoMatches(mpCurrentFrame);
 
         mpCurrentFrame->AssignFeaturesToGrid();
         mpCurrentFrame->ComputeBoW();
@@ -76,7 +74,7 @@ namespace ygz {
         LOG(INFO) << "\n********* Tracking frame " << mpCurrentFrame->mnId << " **********" << endl;
 
         Track();
-        LOG(INFO) << "Tracker returns, pose = \n" << mpCurrentFrame->GetPose().matrix() << "\n\n" << endl;
+        //LOG(INFO) << "Tracker returns, pose = \n" << mpCurrentFrame->GetPose().matrix() << "\n\n" << endl;
         return mpCurrentFrame->GetPose();
     }
 
@@ -97,7 +95,7 @@ namespace ygz {
             // TODO 检查这个图像能否初始化双目
             if (StereoInitialization() == false) {
                 LOG(INFO) << "Stereo init failed." << endl;
-                return;
+                return; 
             }
 
             // 向后端添加关键帧
@@ -280,7 +278,7 @@ namespace ygz {
             }
 
             if (matches.size() < setting::minTrackLastFrameFeatures) {
-                //LOG(INFO)<<"Match with last frame: "<<nmatches<<", return false"<<endl;
+                LOG(INFO)<<"Match with last frame: "<<nmatches<<", return false"<<endl;
                 return false;
             }
 
@@ -295,12 +293,12 @@ namespace ygz {
             }
         }
 
-        //LOG(INFO) << "Track last frame inliers: " << nmatches << endl;
+        LOG(INFO) << "Track last frame inliers: " << nmatches << endl;
 
         if (nmatches >= setting::minTrackLastFrameFeatures) {
             return true;
         } else {
-            //LOG(INFO) << "Inlier is small: " << nmatches << endl;
+            LOG(INFO) << "Inlier is small: " << nmatches << endl;
             return false;
         }
     }

@@ -18,7 +18,7 @@
 #include <Eigen/Geometry>
 #include <stdexcept>
 #include <glog/logging.h>
-
+//#define LOG(x) std::cout
 #include "DBoW2/FORB.h"
 #include "DBoW2/BowVector.h"
 #include "DBoW2/FeatureVector.h"

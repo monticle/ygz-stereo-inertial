@@ -52,7 +52,7 @@ namespace ygz {
         } else {
             mpCurrentFrame = shared_ptr<Frame>(new Frame(imRectLeft, imRectRight, timestamp, mpCam, vimu));
         }
-
+		mpCurrentFrame->ComputeImagePyramid();
         if (this->mbVisionOnlyMode == false)
             mvIMUSinceLastKF.insert(mvIMUSinceLastKF.end(), vimu.begin(), vimu.end());   // 追加imu数据
 

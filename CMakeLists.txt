@@ -159,6 +159,6 @@ add_subdirectory(system)
 
 set(YGZ_LIBS ygz-common ygz-cv ygz-util ygz-backend ygz-system)
 # build examples
-add_subdirectory( examples )
+#add_subdirectory( examples )
 
 add_subdirectory( leadsense )

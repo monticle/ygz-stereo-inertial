@@ -31,7 +31,7 @@ namespace ygz {
         shared_ptr<CameraParam> camera(new CameraParam(fx, fy, cx, cy, bf));
 
         // create a tracker
-        mpTracker = shared_ptr<TrackerLK>(new TrackerLK(configPath));
+        mpTracker = shared_ptr<Tracker>(new TrackerLK(configPath));
         mpTracker->SetCamera(camera);
 
         bool pureVisionMode = string(fsSettings["PureVisionMode"]) == "true";

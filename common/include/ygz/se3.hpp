@@ -88,18 +88,18 @@ namespace Sophus {
     class SE3GroupBase {
     public:
         /** \brief scalar type */
-        typedef typename internal::traits<Derived>::Scalar Scalar;
+        typedef typename Eigen::internal::traits<Derived>::Scalar Scalar;
         /** \brief translation reference type */
-        typedef typename internal::traits<Derived>::TranslationType &
+        typedef typename Eigen::internal::traits<Derived>::TranslationType &
                 TranslationReference;
         /** \brief translation const reference type */
-        typedef const typename internal::traits<Derived>::TranslationType &
+        typedef const typename Eigen::internal::traits<Derived>::TranslationType &
                 ConstTranslationReference;
         /** \brief SO3 reference type */
-        typedef typename internal::traits<Derived>::SO3Type &
+        typedef typename Eigen::internal::traits<Derived>::SO3Type &
                 SO3Reference;
         /** \brief SO3 const reference type */
-        typedef const typename internal::traits<Derived>::SO3Type &
+        typedef const typename Eigen::internal::traits<Derived>::SO3Type &
                 ConstSO3Reference;
 
         /** \brief degree of freedom of group
@@ -357,7 +357,7 @@ namespace Sophus {
          * No direct write access is given to ensure the quaternion stays normalized.
          */
         inline
-        typename internal::traits<Derived>::SO3Type::ConstQuaternionReference
+        typename Eigen::internal::traits<Derived>::SO3Type::ConstQuaternionReference
         unit_quaternion() const {
             return so3().unit_quaternion();
         }
@@ -616,19 +616,19 @@ namespace Sophus {
         typedef SE3GroupBase<SE3Group<_Scalar, _Options> > Base;
     public:
         /** \brief scalar type */
-        typedef typename internal::traits<SE3Group<_Scalar, _Options> >
+        typedef typename Eigen::internal::traits<SE3Group<_Scalar, _Options> >
         ::Scalar Scalar;
         /** \brief SO3 reference type */
-        typedef typename internal::traits<SE3Group<_Scalar, _Options> >
+        typedef typename Eigen::internal::traits<SE3Group<_Scalar, _Options> >
         ::SO3Type &SO3Reference;
         /** \brief SO3 const reference type */
-        typedef const typename internal::traits<SE3Group<_Scalar, _Options> >
+        typedef const typename Eigen::internal::traits<SE3Group<_Scalar, _Options> >
         ::SO3Type &ConstSO3Reference;
         /** \brief translation reference type */
-        typedef typename internal::traits<SE3Group<_Scalar, _Options> >
+        typedef typename Eigen::internal::traits<SE3Group<_Scalar, _Options> >
         ::TranslationType &TranslationReference;
         /** \brief translation const reference type */
-        typedef const typename internal::traits<SE3Group<_Scalar, _Options> >
+        typedef const typename Eigen::internal::traits<SE3Group<_Scalar, _Options> >
         ::TranslationType &ConstTranslationReference;
 
         /** \brief degree of freedom of group */
@@ -796,18 +796,18 @@ namespace Eigen {
 
     public:
         /** \brief scalar type */
-        typedef typename internal::traits<Map>::Scalar Scalar;
+        typedef typename Eigen::internal::traits<Map>::Scalar Scalar;
         /** \brief translation reference type */
-        typedef typename internal::traits<Map>::TranslationType &
+        typedef typename Eigen::internal::traits<Map>::TranslationType &
                 TranslationReference;
         /** \brief translation const reference type */
-        typedef const typename internal::traits<Map>::TranslationType &
+        typedef const typename Eigen::internal::traits<Map>::TranslationType &
                 ConstTranslationReference;
         /** \brief SO3 reference type */
-        typedef typename internal::traits<Map>::SO3Type &
+        typedef typename Eigen::internal::traits<Map>::SO3Type &
                 SO3Reference;
         /** \brief SO3 const reference type */
-        typedef const typename internal::traits<Map>::SO3Type &
+        typedef const typename Eigen::internal::traits<Map>::SO3Type &
                 ConstSO3Reference;
 
         /** \brief degree of freedom of group */
@@ -889,12 +889,12 @@ namespace Eigen {
 
     public:
         /** \brief scalar type */
-        typedef typename internal::traits<Map>::Scalar Scalar;
+        typedef typename Eigen::internal::traits<Map>::Scalar Scalar;
         /** \brief translation const reference type */
-        typedef const typename internal::traits<Map>::TranslationType &
+        typedef const typename Eigen::internal::traits<Map>::TranslationType &
                 ConstTranslationReference;
         /** \brief SO3 const reference type */
-        typedef const typename internal::traits<Map>::SO3Type &
+        typedef const typename Eigen::internal::traits<Map>::SO3Type &
                 ConstSO3Reference;
 
         /** \brief degree of freedom of group */
